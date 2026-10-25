@@ -1,0 +1,68 @@
+﻿@model EnsoPsikoloji.Models.Randevu
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-warning text-dark">
+                    <h4>Randevu Bilgilerini Düzenle</h4>
+                </div>
+                <div class="card-body">
+                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                    <form asp-action="Edit" method="post">
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="mb-3">
+                            <label class="form-label">Hasta</label>
+                            <select asp-for="HastaId" class="form-control" asp-items="ViewBag.HastaId"></select>
+                            <span asp-validation-for="HastaId" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Psikolog</label>
+                            <select asp-for="PsikologId" class="form-control" asp-items="ViewBag.PsikologId"></select>
+                            <span asp-validation-for="PsikologId" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Randevu Tarihi ve Saati</label>
+                            <input asp-for="RandevuTarihi" class="form-control" type="datetime-local" />
+                            <span asp-validation-for="RandevuTarihi" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Seans Notları</label>
+                            <textarea asp-for="Notlar" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="Notlar" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Ucret" class="form-label fw-bold">Seans Ücreti (₺)</label>
+                            <input asp-for="Ucret" type="number" step="50" class="form-control" />
+                            <span asp-validation-for="Ucret" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="OdemeDurumu" class="form-label fw-bold">Ödeme Durumu</label>
+                            <select asp-for="OdemeDurumu" class="form-select">
+                                <option value="Bekliyor">Ödeme Bekliyor</option>
+                                <option value="Odendi">Ödendi</option>
+                            </select>
+                            <span asp-validation-for="OdemeDurumu" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Durum</label>
+                            <input asp-for="Durum" class="form-control" />
+                            <span asp-validation-for="Durum" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-secondary">Listeye Geri Dön</a>
+                            <button type="submit" class="btn btn-warning">Değişiklikleri Kaydet</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

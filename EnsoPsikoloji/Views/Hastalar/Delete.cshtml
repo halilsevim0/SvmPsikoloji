@@ -1,0 +1,42 @@
+﻿@model EnsoPsikoloji.Models.Hasta
+
+@{
+    ViewData["Title"] = "Danışan Kaydını Sil (Arşive Al)";
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="card border-danger shadow-sm">
+                <div class="card-header bg-danger text-white fw-bold">
+                    ⚠️ Danışan Kaydı Silme Onayı
+                </div>
+                <div class="card-body p-4">
+                    <p class="lead mb-3">Bu danışanı arşivlemek (silmek) istediğinize emin misiniz?</p>
+
+                    <div class="alert alert-warning small">
+                        <strong>Bilgilendirme:</strong> Klinik güvenlik politikası gereği danışan veritabanından tamamen silinmez; <strong>arşive alınır</strong> ve normal hasta listelerinden gizlenir.
+                    </div>
+
+                    <dl class="row mb-4">
+                        <dt class="col-sm-4 text-muted">Danışan Adı Soyadı:</dt>
+                        <dd class="col-sm-8 fw-bold">@Model.Adi @Model.Soyadi</dd>
+
+                        <dt class="col-sm-4 text-muted">Telefon:</dt>
+                        <dd class="col-sm-8">@(string.IsNullOrEmpty(Model.Telefon) ? "-" : Model.Telefon)</dd>
+
+                        <dt class="col-sm-4 text-muted">Kayıt Tarihi:</dt>
+                        <dd class="col-sm-8">@Model.KayitTarihi.ToString("dd.MM.yyyy")</dd>
+                    </dl>
+
+                    <form asp-action="Delete" method="post" class="d-flex justify-content-end gap-2">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />
+                        <a asp-action="Index" class="btn btn-secondary">İptal</a>
+                        <button type="submit" class="btn btn-danger fw-bold">Evet, Arşive Al (Sil)</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

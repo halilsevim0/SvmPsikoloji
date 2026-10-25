@@ -1,0 +1,33 @@
+﻿@model EnsoPsikoloji.Models.Randevu
+
+@{
+    ViewData["Title"] = "Randevu Detayı";
+}
+
+<div class="container mt-5">
+    <div class="card shadow col-md-6 mx-auto">
+        <div class="card-header bg-info text-white">
+            <h4>Randevu Detayları</h4>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-4 fw-bold">Hasta:</dt>
+                <dd class="col-sm-8">@Model.Hasta?.Adi @Model.Hasta?.Soyadi</dd>
+
+                <dt class="col-sm-4 fw-bold">Psikolog:</dt>
+                <dd class="col-sm-8">@Model.Psikolog?.AdSoyad</dd>
+
+                <dt class="col-sm-4 fw-bold">Randevu Tarihi:</dt>
+                <dd class="col-sm-8">@Model.RandevuTarihi.ToString("dd.MM.yyyy HH:mm")</dd>
+
+                <dt class="col-sm-4 fw-bold">Durum:</dt>
+                <dd class="col-sm-8"><span class="badge bg-success">@Model.Durum</span></dd>
+            </dl>
+
+            <div class="d-flex justify-content-between mt-4">
+                <a asp-action="Index" class="btn btn-secondary">Listeye Geri Dön</a>
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Düzenle</a>
+            </div>
+        </div>
+    </div>
+</div>

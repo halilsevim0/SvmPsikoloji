@@ -1,0 +1,77 @@
+﻿@model EnsoPsikoloji.Models.PersonelOlusturViewModel
+
+@{
+    ViewData["Title"] = "Yeni Personel Ekle";
+}
+
+<div class="container" style="max-width: 650px;">
+    <div class="card shadow-sm mt-3">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">Yeni Personel Hesabı Tanımla</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label fw-bold"></label>
+                    <input asp-for="Email" class="form-control" placeholder="ornek@ensopsikoloji.com" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label fw-bold"></label>
+                    <input asp-for="Password" class="form-control" placeholder="Şifre belirleyin" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="SecilenRol" class="form-label fw-bold"></label>
+                    <select asp-for="SecilenRol" asp-items="ViewBag.Roller" class="form-select" id="rolSelect">
+                        <option value="">-- Rol Seçiniz --</option>
+                    </select>
+                    <span asp-validation-for="SecilenRol" class="text-danger"></span>
+                </div>
+
+                <div id="psikologAlanlari" class="p-3 bg-light rounded border mb-3">
+                    <h6 class="text-primary fw-bold mb-3">Psikolog Profil Bilgileri</h6>
+                    <div class="mb-2">
+                        <label asp-for="AdSoyad" class="form-label"></label>
+                        <input asp-for="AdSoyad" class="form-control" placeholder="Uzm. Psk. Ad Soyad" />
+                    </div>
+                    <div class="mb-2">
+                        <label asp-for="UzmanlikAlani" class="form-label"></label>
+                        <input asp-for="UzmanlikAlani" class="form-control" placeholder="Bilişsel Davranışçı Terapi vb." />
+                    </div>
+                    <div class="mb-2">
+                        <label asp-for="Telefon" class="form-label"></label>
+                        <input asp-for="Telefon" class="form-control" placeholder="05xx xxx xx xx" />
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-secondary">Vazgeç</a>
+                    <button type="submit" class="btn btn-success">Personeli Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const rolSelect = document.getElementById('rolSelect');
+        const psikologAlanlari = document.getElementById('psikologAlanlari');
+
+        function togglePsikologAlanlari() {
+            if (rolSelect.value === 'Psikolog') {
+                psikologAlanlari.style.display = 'block';
+            } else {
+                psikologAlanlari.style.display = 'none';
+            }
+        }
+
+        rolSelect.addEventListener('change', togglePsikologAlanlari);
+        togglePsikologAlanlari();
+    </script>
+}

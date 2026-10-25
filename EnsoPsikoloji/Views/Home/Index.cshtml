@@ -1,0 +1,465 @@
+﻿@model IEnumerable<EnsoPsikoloji.Models.Psikolog>
+
+@{
+    ViewData["Title"] = "Zihinsel Dinginlik ve Bütünsel İyileşme";
+}
+
+<!-- Başarı Bildirimi -->
+@if (TempData["BasariMesaji"] != null)
+{
+    <div class="container mt-4">
+        <div class="alert alert-success alert-dismissible fade show shadow-sm py-3 text-center rounded-3 border-0" role="alert" style="background-color: #EBF3EE; color: #1E3D2D;">
+            <i class="bi bi-check-circle-fill me-2 fs-5"></i>
+            <strong>Talebiniz Alındı!</strong> @TempData["BasariMesaji"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+}
+
+<!-- 1. Hero Karşılama & Ön Talep Formu -->
+<section class="container py-4 py-lg-5">
+    <div class="hero-section">
+        <div class="row align-items-center g-5">
+            <!-- Sol Metin ve Çağrı -->
+            <div class="col-lg-7">
+                <span class="badge-enso mb-3">
+                    <span class="enso-circle-icon" style="width: 14px; height: 14px; border-width: 2px;"></span>
+                    Enso Psikolojik Danışmanlık Merkezi
+                </span>
+                <h1 class="display-4 fw-bold mb-3" style="color: #1E3D2D; letter-spacing: -0.5px; line-height: 1.2;">
+                    İçsel Denginizi ve Ruhsal Dinginliğinizi Keşfedin.
+                </h1>
+                <p class="lead mb-4" style="color: #4A5B52; font-size: 1.15rem;">
+                    Japon felsefesinde <em>Ensō</em>; aydınlanmayı, sonsuz döngüyü ve zarafeti simgeler. 
+                    Enso Psikoloji olarak, hayatın karmaşasında kendi güvenli alanınızı oluşturmanız ve iç kaynaklarınızı harekete geçirmeniz için bilimsel ve etik yaklaşımlarla yanınızdayız.
+                </p>
+                <div class="d-flex flex-wrap gap-3 pt-2">
+                    <a href="#randevu-al" class="btn btn-enso-primary">
+                        <i class="bi bi-calendar-check me-2"></i>Randevu Planlayın
+                    </a>
+                    <a href="#uzmanlarimiz" class="btn btn-enso-outline">
+                        <i class="bi bi-people me-2"></i>Uzman Kadromuz
+                    </a>
+                </div>
+
+                <!-- Güven Özeti Küçük İkonlar -->
+                <div class="d-flex align-items-center gap-4 mt-5 pt-3 border-top border-secondary-subtle">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-shield-check text-success fs-4"></i>
+                        <span class="small fw-semibold text-muted">%100 Etik & Gizlilik</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-mortarboard text-success fs-4"></i>
+                        <span class="small fw-semibold text-muted">Akredite Uzmanlar</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-laptop text-success fs-4"></i>
+                        <span class="small fw-semibold text-muted">Yüz Yüze & Online</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sağ: Hızlı Ön Talep / Randevu Kartı (Glassmorphism) -->
+            <div class="col-lg-5" id="randevu-al">
+                <div class="glass-card p-4 p-md-5">
+                    <div class="text-center mb-4">
+                        <span class="badge bg-warning text-dark px-3 py-1 rounded-pill mb-2 fw-semibold">
+                            <i class="bi bi-lightning-charge-fill me-1"></i>Hızlı İletişim
+                        </span>
+                        <h4 class="fw-bold mb-1" style="color: #1E3D2D;">Sizi Arayalım</h4>
+                        <p class="text-muted small mb-0">Bilgilerinizi bırakın, klinik koordinatörümüz 15 dakika içinde seansınızı planlasın.</p>
+                    </div>
+
+                    <form asp-action="TalepGonder" method="post">
+                        @Html.AntiForgeryToken()
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small text-muted">Adınız Soyadınız</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-person"></i></span>
+                                <input name="AdSoyad" id="formAdSoyad" class="form-control border-start-0" placeholder="Örn: Deniz Yılmaz" required />
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small text-muted">Telefon Numaranız</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-telephone"></i></span>
+                                <input name="Telefon" class="form-control border-start-0" placeholder="05xx xxx xx xx" required />
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold small text-muted">Görüşmek İstediğiniz Uzman veya Alan</label>
+                            <select name="TalepDetayi" id="formTalepDetayi" class="form-select">
+                                <option value="Genel Danışmanlık ve Bilgi">Klinikten Genel Bilgi Almak İstiyorum</option>
+                                <option value="Bireysel Terapi">Bireysel Yetişkin Terapisi</option>
+                                <option value="Çift ve Evlilik Terapisi">Çift & Evlilik Danışmanlığı</option>
+                                <option value="EMDR Travma Terapisi">EMDR Terapisi</option>
+                                <option value="Çocuk ve Ergen Terapisi">Çocuk ve Ergen Danışmanlığı</option>
+                                @foreach (var p in Model)
+                                {
+                                    <option value="Uzm. @p.AdSoyad - @p.UzmanlikAlani">@p.AdSoyad (@p.UzmanlikAlani)</option>
+                                }
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-enso-primary w-100 py-3 fw-bold">
+                            <i class="bi bi-send-check me-2"></i>Görüşme Talebi Gönder
+                        </button>
+
+                        <div class="text-center mt-3">
+                            <small class="text-muted">
+                                <i class="bi bi-lock me-1"></i>Kişisel verileriniz KVKK kapsamında korunmaktadır.
+                            </small>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 2. Güven Rozetleri Barı -->
+<section class="container py-4">
+    <div class="row g-3">
+        <div class="col-md-3 col-sm-6">
+            <div class="trust-badge-item">
+                <div class="trust-badge-icon"><i class="bi bi-heart-pulse"></i></div>
+                <div>
+                    <h6 class="fw-bold mb-0">Bilimsel Yaklaşım</h6>
+                    <small class="text-muted">Kanıta dayalı ekoller</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="trust-badge-item">
+                <div class="trust-badge-icon"><i class="bi bi-shield-lock"></i></div>
+                <div>
+                    <h6 class="fw-bold mb-0">Mutlak Gizlilik</h6>
+                    <small class="text-muted">Etik ilke ve güvence</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="trust-badge-item">
+                <div class="trust-badge-icon"><i class="bi bi-person-check"></i></div>
+                <div>
+                    <h6 class="fw-bold mb-0">Uzman Psikologlar</h6>
+                    <small class="text-muted">Alanında yetkin kadro</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="trust-badge-item">
+                <div class="trust-badge-icon"><i class="bi bi-camera-video"></i></div>
+                <div>
+                    <h6 class="fw-bold mb-0">Esnek Seanslar</h6>
+                    <small class="text-muted">Klinikte ya da online</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 3. Hizmetlerimiz (Terapi Alanları) -->
+<section class="container py-5" id="hizmetler">
+    <div class="text-center mb-5">
+        <span class="badge-enso mb-2">Çalışma Alanlarımız</span>
+        <h2 class="fw-bold display-6" style="color: #1E3D2D;">Size Nasıl Yardımcı Olabiliriz?</h2>
+        <p class="text-muted mx-auto" style="max-width: 650px;">
+            Her bireyin hikayesi ve ihtiyaçları kendine özgüdür. Uzman psikologlarımızla birlikte size en uygun terapi sürecini yapılandırıyoruz.
+        </p>
+    </div>
+
+    <div class="row g-4">
+        <!-- Hizmet 1: Bireysel Terapi -->
+        <div class="col-lg-4 col-md-6">
+            <div class="service-card">
+                <div class="service-icon-box"><i class="bi bi-person-heart"></i></div>
+                <h4 class="fw-bold mb-2" style="color: #1E3D2D;">Bireysel Yetişkin Terapisi</h4>
+                <p class="text-muted mb-4 flex-grow-1">
+                    Depresyon, kaygı (anksiyete), panik atak, değersizlik hissi ve stres yönetimi gibi süreçlerde içsel farkındalığınızı artırıyoruz.
+                </p>
+                <a href="#randevu-al" onclick="seciliHizmet('Bireysel Yetişkin Terapisi')" class="fw-semibold text-decoration-none" style="color: #2D5A43;">
+                    Detaylı Bilgi & Randevu &rarr;
+                </a>
+            </div>
+        </div>
+
+        <!-- Hizmet 2: Çift & Aile Danışmanlığı -->
+        <div class="col-lg-4 col-md-6">
+            <div class="service-card">
+                <div class="service-icon-box"><i class="bi bi-people-fill"></i></div>
+                <h4 class="fw-bold mb-2" style="color: #1E3D2D;">Çift & Evlilik Terapisi</h4>
+                <p class="text-muted mb-4 flex-grow-1">
+                    İletişim kopuklukları, çatışma çözümü, güven problemleri ve boşanma süreçlerinde ilişkideki tıkanıklıkları dönüştürüyoruz.
+                </p>
+                <a href="#randevu-al" onclick="seciliHizmet('Çift & Evlilik Danışmanlığı')" class="fw-semibold text-decoration-none" style="color: #2D5A43;">
+                    Detaylı Bilgi & Randevu &rarr;
+                </a>
+            </div>
+        </div>
+
+        <!-- Hizmet 3: EMDR & Travma -->
+        <div class="col-lg-4 col-md-6">
+            <div class="service-card">
+                <div class="service-icon-box"><i class="bi bi-activity"></i></div>
+                <h4 class="fw-bold mb-2" style="color: #1E3D2D;">EMDR Travma Terapisi</h4>
+                <p class="text-muted mb-4 flex-grow-1">
+                    Göz hareketleriyle duyarsızlaştırma tekniğiyle; kaza, yas, fobi veya travmatik geçmiş yaşantıların zihindeki etkisini dönüştürüyoruz.
+                </p>
+                <a href="#randevu-al" onclick="seciliHizmet('EMDR Terapisi')" class="fw-semibold text-decoration-none" style="color: #2D5A43;">
+                    Detaylı Bilgi & Randevu &rarr;
+                </a>
+            </div>
+        </div>
+
+        <!-- Hizmet 4: Çocuk & Ergen -->
+        <div class="col-lg-4 col-md-6">
+            <div class="service-card">
+                <div class="service-icon-box"><i class="bi bi-balloon-heart"></i></div>
+                <h4 class="fw-bold mb-2" style="color: #1E3D2D;">Çocuk & Ergen Psikolojisi</h4>
+                <p class="text-muted mb-4 flex-grow-1">
+                    Sınav kaygısı, öfke kontrolü, akran zorbalığı ve uyum sorunlarında gençlerin ve çocukların duygusal gelişimini destekliyoruz.
+                </p>
+                <a href="#randevu-al" onclick="seciliHizmet('Çocuk ve Ergen Danışmanlığı')" class="fw-semibold text-decoration-none" style="color: #2D5A43;">
+                    Detaylı Bilgi & Randevu &rarr;
+                </a>
+            </div>
+        </div>
+
+        <!-- Hizmet 5: Bilişsel Davranışçı Terapi -->
+        <div class="col-lg-4 col-md-6">
+            <div class="service-card">
+                <div class="service-icon-box"><i class="bi bi-puzzle"></i></div>
+                <h4 class="fw-bold mb-2" style="color: #1E3D2D;">Bilişsel Davranışçı Terapi (BDT)</h4>
+                <p class="text-muted mb-4 flex-grow-1">
+                    Olumsuz otomatik düşünce kalıplarını tanımlayarak, duygularınızı ve davranışlarınızı daha işlevsel hale getiren yapılandırılmış ekol.
+                </p>
+                <a href="#randevu-al" onclick="seciliHizmet('Bilişsel Davranışçı Terapi')" class="fw-semibold text-decoration-none" style="color: #2D5A43;">
+                    Detaylı Bilgi & Randevu &rarr;
+                </a>
+            </div>
+        </div>
+
+        <!-- Hizmet 6: Online Terapi -->
+        <div class="col-lg-4 col-md-6">
+            <div class="service-card">
+                <div class="service-icon-box"><i class="bi bi-globe"></i></div>
+                <h4 class="fw-bold mb-2" style="color: #1E3D2D;">Online Terapi Hizmeti</h4>
+                <p class="text-muted mb-4 flex-grow-1">
+                    Türkiye'nin ve dünyanın neresinde olursanız olun, güvenli ve şifreli görüntülü bağlantı üzerinden profesyonel psikolojik destek.
+                </p>
+                <a href="#randevu-al" onclick="seciliHizmet('Online Terapi')" class="fw-semibold text-decoration-none" style="color: #2D5A43;">
+                    Detaylı Bilgi & Randevu &rarr;
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. Uzman Kadromuz -->
+<section class="container py-5" id="uzmanlarimiz">
+    <div class="text-center mb-5">
+        <span class="badge-enso mb-2">Uzman Kadromuz</span>
+        <h2 class="fw-bold display-6" style="color: #1E3D2D;">Deneyimli Psikologlarımız</h2>
+        <p class="text-muted mx-auto" style="max-width: 600px;">
+            Her biri kendi uzmanlık alanında klinik yetkinliğe ve süpervizyon deneyimine sahip ekibimizle tanışın.
+        </p>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+        @foreach (var p in Model)
+        {
+            <div class="col-lg-4 col-md-6">
+                <div class="doctor-card p-4 text-center h-100 d-flex flex-column">
+                    <div class="doctor-avatar-circle">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                    <h5 class="fw-bold mb-1" style="color: #1E3D2D;">Uzm. Psikolog @p.AdSoyad</h5>
+                    <span class="badge bg-light text-dark border align-self-center my-2 px-3 py-2">
+                        @p.UzmanlikAlani
+                    </span>
+                    <p class="text-muted small my-3 flex-grow-1">
+                        Bireysel danışmanlık, süpervizyon ve kanıta dayalı klinik görüşmelerle danışan kabulü gerçekleştirmektedir.
+                    </p>
+                    <div class="border-top pt-3 d-flex justify-content-between align-items-center">
+                        <span class="small text-muted"><i class="bi bi-clock me-1"></i>Haftalık Randevu Açık</span>
+                        <a href="#randevu-al" onclick="seciliDoktor('@p.AdSoyad', '@p.UzmanlikAlani')" class="btn btn-sm btn-enso-primary">
+                            Randevu İste
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+        @if (!Model.Any())
+        {
+            <div class="col-12 text-center py-4">
+                <p class="text-muted">Kayıtlı uzman psikolog bulunmamaktadır.</p>
+            </div>
+        }
+    </div>
+</section>
+
+<!-- 5. Enso Felsefesi & Hakkımızda -->
+<section class="container py-5 my-3" id="hakkimizda">
+    <div class="row align-items-center g-5">
+        <div class="col-lg-6">
+            <span class="badge-enso mb-2">Felsefemiz & Yaklaşımımız</span>
+            <h2 class="fw-bold display-6 mb-4" style="color: #1E3D2D;">Ensō: Kusursuzluğun Değil, Kabulün Çemberi</h2>
+            <p class="text-muted leading-relaxed">
+                Geleneksel Japon Zen kaligrafisinde <strong>Ensō</strong>, fırçanın tek bir nefeste ve tek bir dairesel hareketle çizildiği kutsal bir semboldür. Bu çember asla kusursuz bir geometriye sahip değildir; tıpkı insan ruhu ve hayat gibi kendi kusurları, kıvrımları ve özgünlüğüyle güzeldir.
+            </p>
+            <p class="text-muted leading-relaxed">
+                Enso Psikoloji olarak terapötik süreci bireyin kendi eksikliklerini ve acılarını yargılamadan kucakladığı, geçmiş yüklerini dönüştürdüğü güvenli bir alan olarak görüyoruz.
+            </p>
+            <div class="row g-3 mt-2">
+                <div class="col-6">
+                    <div class="border-start border-3 border-success ps-3">
+                        <h4 class="fw-bold mb-0 text-success">5000+</h4>
+                        <small class="text-muted">Tamamlanan Seans</small>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="border-start border-3 border-warning ps-3">
+                        <h4 class="fw-bold mb-0 text-warning">%98</h4>
+                        <small class="text-muted">Danışan Memnuniyeti</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 text-center">
+            <div class="p-5 rounded-4 shadow-sm" style="background: linear-gradient(135deg, #FAF8F5, #EBF3EE); border: 2px dashed #C5D8CC;">
+                <div class="enso-circle-icon mx-auto mb-4" style="width: 140px; height: 140px; border-width: 10px; border-color: #2D5A43; border-right-color: transparent;"></div>
+                <h4 class="fw-bold mb-2" style="color: #1E3D2D;">"Kendini bilmek tüm bilgeliğin başlangıcıdır."</h4>
+                <p class="text-muted mb-0">— Aristoteles</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 6. Sıkça Sorulan Sorular (SSS) -->
+<section class="container py-5" id="sss">
+    <div class="text-center mb-5">
+        <span class="badge-enso mb-2">Merak Edilenler</span>
+        <h2 class="fw-bold display-6" style="color: #1E3D2D;">Sıkça Sorulan Sorular</h2>
+        <p class="text-muted mx-auto" style="max-width: 600px;">
+            Terapi süreciyle ilgili aklınıza takılan soruların yanıtlarını derledik.
+        </p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="accordion shadow-sm rounded-3 overflow-hidden border-0" id="sssAccordion">
+                <div class="accordion-item border-0 border-bottom">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button fw-bold py-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            İlk terapi seansında neler konuşulur?
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#sssAccordion">
+                        <div class="accordion-body text-muted">
+                            İlk seans genellikle bir "değerlendirme ve tanışma" seansıdır. Terapistiniz sizi kliniğe getiren temel şikayetleri, geçmiş öykünüzü dinler ve birlikte terapi hedeflerini belirler. Herhangi bir konuda zorlanmadan, kendi hızınızda paylaşımda bulunabilirsiniz.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item border-0 border-bottom">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed fw-bold py-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            Seanslar ne kadar sürer ve sıklığı nasıl belirlenir?
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#sssAccordion">
+                        <div class="accordion-body text-muted">
+                            Bireysel seanslar standart olarak 50 dakika, çift ve aile seansları ise 75-80 dakika sürmektedir. Görüşme sıklığı ilk aşamada genellikle haftada 1 seans olarak planlanır ve sürecin ilerleyişine göre seyreltilebilir.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item border-0 border-bottom">
+                    <h2 class="accordion-header" id="headingThree">
+                        <button class="accordion-button collapsed fw-bold py-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            Seanslarda paylaştığım bilgiler gizli kalır mı?
+                        </button>
+                    </h2>
+                    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#sssAccordion">
+                        <div class="accordion-body text-muted">
+                            Kesinlikle evet. Enso Psikoloji bünyesindeki tüm görüşmeler Türk Psikologlar Derneği Etik Yönetmeliği ve uluslararası etik kodlara sıkı sıkıya bağlıdır. Bilgileriniz danışanın açık yazılı izni olmaksızın üçüncü şahıslarla asla paylaşılmaz.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item border-0">
+                    <h2 class="accordion-header" id="headingFour">
+                        <button class="accordion-button collapsed fw-bold py-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                            Online terapi yüz yüze terapi kadar etkili midir?
+                        </button>
+                    </h2>
+                    <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#sssAccordion">
+                        <div class="accordion-body text-muted">
+                            Bilimsel araştırmalar, uygun koşullarda gerçekleştirilen online terapinin (özellikle BDT ve kabul odaklı yaklaşımlarda) yüz yüze terapi ile eşdeğer klinik başarı sağladığını göstermektedir.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 7. Alt Çağrı (CTA Banner) -->
+<section class="container py-5">
+    <div class="p-5 rounded-4 text-center text-white position-relative overflow-hidden shadow" style="background: linear-gradient(135deg, #1E3D2D, #2D5A43);">
+        <h2 class="display-6 fw-bold mb-3">Zihinsel İyilik Haliniz İçin Bir Adım Atın</h2>
+        <p class="lead text-white-50 mx-auto mb-4" style="max-width: 600px;">
+            Yalnız hissettiğinizde veya çıkış yolu aradığınızda uzman desteği almak en büyük güçtür. Biz yanınızdayız.
+        </p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="#randevu-al" class="btn btn-enso-accent px-4 py-3">
+                <i class="bi bi-chat-heart me-2"></i>Hemen İletişim Formunu Doldurun
+            </a>
+            <a href="tel:02160000000" class="btn btn-outline-light px-4 py-3 rounded-pill fw-semibold">
+                <i class="bi bi-telephone-outbound me-2"></i>Bizi Arayın: (0216) 450 00 00
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Form Kolaylaştırıcı Küçük Script -->
+@section Scripts {
+    <script>
+        function seciliDoktor(doktorAd, uzmanlik) {
+            const select = document.getElementById('formTalepDetayi');
+            if (select) {
+                // Seçenek varsa bulup seçelim
+                let optionFound = false;
+                for (let i = 0; i < select.options.length; i++) {
+                    if (select.options[i].text.includes(doktorAd)) {
+                        select.selectedIndex = i;
+                        optionFound = true;
+                        break;
+                    }
+                }
+                if (!optionFound) {
+                    const newOpt = new Option("Uzm. " + doktorAd + " (" + uzmanlik + ")", "Uzm. " + doktorAd);
+                    select.add(newOpt);
+                    select.value = newOpt.value;
+                }
+            }
+            document.getElementById('formAdSoyad')?.focus();
+        }
+
+        function seciliHizmet(hizmetAdi) {
+            const select = document.getElementById('formTalepDetayi');
+            if (select) {
+                for (let i = 0; i < select.options.length; i++) {
+                    if (select.options[i].text.includes(hizmetAdi)) {
+                        select.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+            document.getElementById('formAdSoyad')?.focus();
+        }
+    </script>
+}

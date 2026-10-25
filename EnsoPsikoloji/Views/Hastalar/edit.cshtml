@@ -1,0 +1,37 @@
+﻿@model EnsoPsikoloji.Models.Hasta
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-warning text-dark">
+                    <h4>Hasta Bilgilerini Güncelle</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Edit" method="post">
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="KayitTarihi" />
+
+                        <div class="mb-3">
+                            <label class="form-label">Adı</label>
+                            <input asp-for="Ad" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Soyadı</label>
+                            <input asp-for="Soyad" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Telefon Numarası</label>
+                            <input asp-for="Telefon" class="form-control" />
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-secondary">Listeye Geri Dön</a>
+                            <button type="submit" class="btn btn-primary">Değişiklikleri Kaydet</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

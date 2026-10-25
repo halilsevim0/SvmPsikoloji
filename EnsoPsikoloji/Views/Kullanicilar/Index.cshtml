@@ -1,0 +1,51 @@
+﻿@model IEnumerable<EnsoPsikoloji.Models.PersonelListViewModel>
+
+@{
+    ViewData["Title"] = "Personel Yönetimi";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Personel & Kullanıcı Yönetimi</h2>
+    <a asp-action="Create" class="btn btn-primary">+ Yeni Personel Oluştur</a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>E-Posta</th>
+                    <th>Roller</th>
+                    <th class="text-end">İşlem</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td class="fw-bold">@user.Email</td>
+                        <td>
+                            @if (user.Roller.Contains("Admin"))
+                            {
+                                <span class="badge bg-danger">Admin</span>
+                            }
+                            else if (user.Roller.Contains("Psikolog"))
+                            {
+                                <span class="badge bg-success">Psikolog</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">@user.Roller</span>
+                            }
+                        </td>
+                        <td class="text-end">
+                            <form asp-action="Delete" asp-route-id="@user.Id" method="post" class="d-inline" onsubmit="return confirm('Bu kullanıcıyı silmek istediğinize emin misiniz?');">
+                                <button type="submit" class="btn btn-outline-danger btn-sm">Hesabı Sil</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

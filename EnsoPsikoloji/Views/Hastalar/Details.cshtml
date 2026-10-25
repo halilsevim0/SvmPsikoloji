@@ -1,0 +1,152 @@
+﻿@model EnsoPsikoloji.Models.Hasta
+
+@{
+    ViewData["Title"] = $"{Model.Adi} {Model.Soyadi} - Danışan Dosyası";
+    var seansNotlari = ViewBag.SeansNotlari as List<EnsoPsikoloji.Models.SeansNotu> ?? new List<EnsoPsikoloji.Models.SeansNotu>();
+}
+
+@if (TempData["Mesaj"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+        @TempData["Mesaj"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["Hata"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+        @TempData["Hata"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold text-dark mb-0">@Model.Adi @Model.Soyadi</h2>
+        <span class="text-muted small">Kayıt No: #@Model.Id</span>
+    </div>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm">Bilgileri Düzenle</a>
+        <a asp-action="Index" class="btn btn-secondary btn-sm">Listeye Dön</a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Sol Kolon: Danışan Temel Bilgileri & Randevular -->
+    <div class="col-lg-4">
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-dark text-white fw-bold">
+                Danışan Künyesi
+            </div>
+            <div class="card-body">
+                <p class="mb-2"><strong>Telefon:</strong> @(string.IsNullOrEmpty(Model.Telefon) ? "-" : Model.Telefon)</p>
+                <p class="mb-2"><strong>E-Posta:</strong> @(string.IsNullOrEmpty(Model.Email) ? "-" : Model.Email)</p>
+                <p class="mb-0"><strong>Kayıt Tarihi:</strong> @Model.KayitTarihi.ToString("dd.MM.yyyy")</p>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-light fw-bold d-flex justify-content-between align-items-center">
+                <span>Randevu Geçmişi</span>
+                <span class="badge bg-secondary">@(Model.Randevular?.Count ?? 0)</span>
+            </div>
+            <ul class="list-group list-group-flush">
+                @if (Model.Randevular != null && Model.Randevular.Any())
+                {
+                    @foreach (var r in Model.Randevular.OrderByDescending(x => x.RandevuTarihi))
+                    {
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between">
+                                <span class="fw-bold small">@r.RandevuTarihi.ToString("dd.MM.yyyy HH:mm")</span>
+                                <span class="badge bg-info text-dark">@r.Durum</span>
+                            </div>
+                            <small class="text-muted">Uzm: @r.Psikolog?.AdSoyad</small>
+                        </li>
+                    }
+                }
+                else
+                {
+                    <li class="list-group-item text-muted small text-center py-3">Kayıtlı randevu bulunmuyor.</li>
+                }
+            </ul>
+        </div>
+    </div>
+
+    <!-- Sağ Kolon: Klinik Seans Notları & Zaman Çizelgesi (Sadece Admin ve Psikolog) -->
+    <div class="col-lg-8">
+        @if (User.IsInRole("Admin") || User.IsInRole("Psikolog"))
+        {
+            <!-- Yeni Not Ekleme Kartı -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-primary text-white fw-bold">
+                    📝 Yeni Seans / Klinik Notu Ekle
+                </div>
+                <div class="card-body">
+                    <form asp-controller="SeansNotlari" asp-action="Create" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="hastaId" value="@Model.Id" />
+
+                        <div class="mb-3">
+                            <textarea name="notIcerigi" class="form-control" rows="3" placeholder="Seans gözlemleri, danışanın duygu durumu, verilen ev ödevleri..." required></textarea>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="gizliNotMu" value="true" id="gizliNotCheck">
+                                <label class="form-check-label text-muted small" for="gizliNotCheck">
+                                    🔒 Gizli Not (Yalnızca siz görebilirsiniz)
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-success btn-sm px-4 fw-bold">
+                                Notu Kaydet
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Kronolojik Seans Notları (Timeline) -->
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-light fw-bold">
+                    Klinik Seans Geçmişi & Notlar
+                </div>
+                <div class="card-body p-4">
+                    @if (seansNotlari.Any())
+                    {
+                        <div class="timeline position-relative">
+                            @foreach (var not in seansNotlari)
+                            {
+                                <div class="p-3 mb-3 rounded border-start border-4 @(not.GizliNotMu ? "border-warning bg-warning-subtle" : "border-primary bg-light") shadow-sm">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div class="fw-bold text-dark">
+                                            Uzm. @(not.Psikolog?.AdSoyad ?? "Klinik Uzmanı")
+                                            @if (not.GizliNotMu)
+                                            {
+                                                <span class="badge bg-warning text-dark ms-2">🔒 Gizli Not</span>
+                                            }
+                                        </div>
+                                        <small class="text-muted">@not.OlusturulmaTarihi.ToString("dd.MM.yyyy HH:mm")</small>
+                                    </div>
+                                    <p class="mb-0 text-secondary" style="white-space: pre-line;">@not.NotIcerigi</p>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-4 text-muted">
+                            <p class="mb-0">Bu danışan için henüz girilmiş bir seans notu bulunmamaktadır.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-secondary text-center py-4">
+                <strong>Gizlilik Bildirimi:</strong> Klinik seans notları yalnızca seansı yürüten uzman psikologlar ve klinik direktörü tarafından görüntülenebilir.
+            </div>
+        }
+    </div>
+</div>

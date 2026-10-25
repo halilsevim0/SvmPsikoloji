@@ -1,0 +1,247 @@
+﻿@model EnsoPsikoloji.ViewModels.FinansRaporViewModel
+@{
+    ViewData["Title"] = "Yonetim & Klinik Ozeti";
+}
+
+<div class="container-fluid py-4">
+    <!-- Ust Baslik ve Hos Geldin -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h2 class="fw-bold text-primary mb-1">
+                <i class="bi bi-speedometer2 me-2"></i>Klinik Yonetim Paneli
+            </h2>
+            <p class="text-muted mb-0">Hos geldiniz, <strong>@(User.Identity?.Name ?? "Yonetici")</strong>. Iste kliniginizin anlik durumu:</p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+            <form asp-action="OrnekVerileriYukle" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-warning text-dark fw-bold shadow-sm">
+                    <i class="bi bi-database-fill-add me-1"></i>Ornek Verileri Yukle
+                </button>
+            </form>
+            <a asp-action="Finans" class="btn btn-outline-success">
+                <i class="bi bi-cash-coin me-1"></i>Detayli Finans & Hakedis
+            </a>
+            <a asp-controller="Kullanicilar" asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-people-fill me-1"></i>Personel Yonetimi
+            </a>
+            <a asp-controller="Randevular" asp-action="Takvim" class="btn btn-primary">
+                <i class="bi bi-calendar-week me-1"></i>Takvim
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["BasariMesaji"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>@TempData["BasariMesaji"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Finans ve Seans KPI Kartlari -->
+    <div class="row g-3 mb-4">
+        <!-- Toplam Ciro -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm rounded-3 bg-gradient bg-primary text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="text-white-50 small text-uppercase fw-bold">Toplam Ciro</span>
+                            <h3 class="fw-bold mt-1 mb-0">@Model.ToplamCiro.ToString("C2")</h3>
+                            <small class="text-white-50">Bu Ay: @Model.BuAyCiro.ToString("C2")</small>
+                        </div>
+                        <div class="fs-1 text-white-50">
+                            <i class="bi bi-wallet2"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tahsil Edilen -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm rounded-3 bg-gradient bg-success text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="text-white-50 small text-uppercase fw-bold">Tahsil Edilen</span>
+                            <h3 class="fw-bold mt-1 mb-0">@Model.TahsilEdilenUcret.ToString("C2")</h3>
+                            <small class="text-white-50">Bu Ay: @Model.BuAyTahsilEdilen.ToString("C2")</small>
+                        </div>
+                        <div class="fs-1 text-white-50">
+                            <i class="bi bi-check2-circle"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bekleyen Alacak -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm rounded-3 bg-gradient bg-warning text-dark h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="text-black-50 small text-uppercase fw-bold">Bekleyen Odemeler</span>
+                            <h3 class="fw-bold mt-1 mb-0">@Model.BekleyenTahsilat.ToString("C2")</h3>
+                            <small class="text-black-50">Bu Ay Bekleyen: @Model.BuAyBekleyen.ToString("C2")</small>
+                        </div>
+                        <div class="fs-1 text-black-50">
+                            <i class="bi bi-hourglass-split"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Randevu & Danisan -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm rounded-3 bg-gradient bg-info text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="text-white-50 small text-uppercase fw-bold">Danisan & Seans</span>
+                            <h3 class="fw-bold mt-1 mb-0">@Model.ToplamHastaSayisi Danisan</h3>
+                            <small class="text-white-50">Toplam @Model.ToplamRandevuSayisi Seans</small>
+                        </div>
+                        <div class="fs-1 text-white-50">
+                            <i class="bi bi-people"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alt Kisim: Psikolog Hakedisleri ve Son Seanslar -->
+    <div class="row g-4">
+        <!-- Psikolog Performans & Ciro Ozeti -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm rounded-3 h-100">
+                <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0 text-dark">
+                        <i class="bi bi-person-badge text-primary me-2"></i>Psikolog Seans & Ciro Durumu
+                    </h5>
+                    <a asp-action="Finans" class="btn btn-sm btn-light">Tumunu Gor</a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Psikolog</th>
+                                    <th>Seans</th>
+                                    <th>Uretilen Ciro</th>
+                                    <th>Tahsil Edilen</th>
+                                    <th>Hakedis (%50)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var p in Model.PsikologOzetleri)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="fw-bold">@p.AdSoyad</div>
+                                            <small class="text-muted">@p.UzmanlikAlani</small>
+                                        </td>
+                                        <td><span class="badge bg-secondary">@p.ToplamSeans</span></td>
+                                        <td><strong>@p.ToplamUretilenCiro.ToString("C2")</strong></td>
+                                        <td class="text-success">@p.TahsilEdilen.ToString("C2")</td>
+                                        <td><span class="badge bg-primary">@p.TahminiHakedis.ToString("C2")</span></td>
+                                    </tr>
+                                }
+                                @if (!Model.PsikologOzetleri.Any())
+                                {
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted py-3">Henuz kayitli psikolog bulunmuyor.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Son Seans Hareketleri & Odeme Yonetimi -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm rounded-3 h-100">
+                <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0 text-dark">
+                        <i class="bi bi-clock-history text-primary me-2"></i>Son Seanslar ve Odeme Durumu
+                    </h5>
+                    <a asp-controller="Randevular" asp-action="Index" class="btn btn-sm btn-light">Randevular</a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Danisan / Tarih</th>
+                                    <th>Psikolog</th>
+                                    <th>Ucret</th>
+                                    <th>Odeme</th>
+                                    <th>Islem</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var seans in Model.SonSeanslar)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="fw-bold">@seans.DanisanAdi</div>
+                                            <small class="text-muted">@seans.Tarih.ToString("dd.MM.yyyy HH:mm")</small>
+                                        </td>
+                                        <td>@seans.PsikologAdi</td>
+                                        <td><strong>@seans.Ucret.ToString("C2")</strong></td>
+                                        <td>
+                                            @if (seans.OdemeDurumu == "Odendi")
+                                            {
+                                                <span class="badge bg-success"><i class="bi bi-check-lg me-1"></i>Odendi</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-warning text-dark"><i class="bi bi-hourglass-split me-1"></i>Bekliyor</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (seans.OdemeDurumu != "Odendi")
+                                            {
+                                                <form asp-action="OdemeDurumuGuncelle" method="post" class="d-inline">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="randevuId" value="@seans.RandevuId" />
+                                                    <input type="hidden" name="yeniDurum" value="Odendi" />
+                                                    <button type="submit" class="btn btn-xs btn-outline-success btn-sm" title="Odendi Olarak Isaretle">
+                                                        <i class="bi bi-check-circle"></i> Alindi
+                                                    </button>
+                                                </form>
+                                            }
+                                            else
+                                            {
+                                                <form asp-action="OdemeDurumuGuncelle" method="post" class="d-inline">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="randevuId" value="@seans.RandevuId" />
+                                                    <input type="hidden" name="yeniDurum" value="Bekliyor" />
+                                                    <button type="submit" class="btn btn-xs btn-outline-secondary btn-sm" title="Bekliyor Yap">
+                                                        <i class="bi bi-arrow-counterclockwise"></i> Geri Al
+                                                    </button>
+                                                </form>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                                @if (!Model.SonSeanslar.Any())
+                                {
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted py-3">Henuz seans kaydi bulunmuyor.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

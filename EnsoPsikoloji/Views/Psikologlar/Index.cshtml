@@ -1,0 +1,42 @@
+﻿@model IEnumerable<EnsoPsikoloji.Models.Psikolog>
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-success">Enso Psikoloji - Psikolog Listesi</h2>
+        <a asp-action="Create" class="btn btn-success">+ Yeni Psikolog Ekle</a>
+    </div>
+
+    <table class="table table-bordered table-striped align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Ad Soyad</th>
+                <th>Uzmanlık Alanı</th>
+                <th>Telefon</th>
+                <th class="text-center" style="width: 200px;">İşlemler</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var psikolog in Model)
+            {
+                <tr>
+                    <td>@psikolog.Id</td>
+                    <td>@psikolog.AdSoyad</td>
+                    <td>@psikolog.UzmanlikAlani</td>
+                    <td>@psikolog.Telefon</td>
+                    <td class="text-center">
+                        <div class="btn-group" role="group">
+                            <a asp-action="Edit" asp-route-id="@psikolog.Id" class="btn btn-sm btn-warning">Düzenle</a>
+                            <form asp-action="Delete" asp-route-id="@psikolog.Id" method="post" class="d-inline ms-1" onsubmit="return confirm('Bu psikoloğu silmek istediğinize emin misiniz?');">
+                                <button type="submit" class="btn btn-sm btn-danger">Sil</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="mt-3">
+        <a href="/Hastalar" class="btn btn-primary">← Hasta Listesine Dön</a>
+    </div>
+</div>

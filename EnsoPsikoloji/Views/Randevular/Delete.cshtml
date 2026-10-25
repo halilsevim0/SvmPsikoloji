@@ -1,0 +1,30 @@
+﻿@model EnsoPsikoloji.Models.Randevu
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h4>Randevu İptal Onayı</h4>
+                </div>
+                <div class="card-body">
+                    <p class="lead">Bu randevuyu sistemden silmek / iptal etmek istediğinizden emin misiniz?</p>
+
+                    <ul class="list-group mb-4">
+                        <li class="list-group-item"><strong>Hasta:</strong> @Model.Hasta?.Adi @Model.Hasta?.Soyadi</li>
+                        <li class="list-group-item"><strong>Psikolog:</strong> Uzman Dr. @Model.Psikolog?.Ad @Model.Psikolog?.Soyad</li>
+                        <li class="list-group-item"><strong>Tarih:</strong> @Model.RandevuTarihi.ToString("dd.MM.yyyy HH:mm")</li>
+                    </ul>
+
+                    <form asp-action="Delete">
+                        <input type="hidden" asp-for="Id" />
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-secondary">Vazgeç, Listeye Dön</a>
+                            <button type="submit" class="btn btn-danger">Randevuyu İptal Et</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

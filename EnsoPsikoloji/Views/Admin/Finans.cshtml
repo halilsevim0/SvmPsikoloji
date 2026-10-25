@@ -1,0 +1,161 @@
+@model EnsoPsikoloji.ViewModels.FinansRaporViewModel
+@{
+    ViewData["Title"] = "Klinik Finans & Hakediş Raporu";
+    var psikologlar = ViewBag.Psikologlar as List<EnsoPsikoloji.Models.Psikolog> ?? new();
+    int? seciliPsikologId = ViewBag.SeciliPsikologId as int?;
+}
+
+<div class="container-fluid py-4">
+    <!-- Üst Başlık -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h2 class="fw-bold text-success mb-1">
+                <i class="bi bi-cash-stack me-2"></i>Finans & Hakediş Raporlama
+            </h2>
+            <p class="text-muted mb-0">Klinik gelirleri, seans ücretleri, ödeme durumları ve uzman psikolog hakediş detayları.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button onclick="window.print()" class="btn btn-outline-secondary">
+                <i class="bi bi-printer me-1"></i>Yazdır / PDF
+            </button>
+            <a asp-action="Index" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left me-1"></i>Yönetim Paneli
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["BasariMesaji"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>@TempData["BasariMesaji"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Filtreleme Alanı -->
+    <div class="card border-0 shadow-sm rounded-3 mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label fw-bold small text-muted">Psikolog Filtresi</label>
+                    <select name="psikologId" class="form-select">
+                        <option value="">-- Tüm Psikologlar --</option>
+                        @foreach (var p in psikologlar)
+                        {
+                            <option value="@p.Id" selected="@(seciliPsikologId == p.Id ? "selected" : null)">@p.AdSoyad (@p.UzmanlikAlani)</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold small text-muted">Yıl</label>
+                    <select name="yil" class="form-select">
+                        <option value="">Tüm Yıllar</option>
+                        @for (int y = DateTime.Now.Year; y >= 2024; y--)
+                        {
+                            <option value="@y">@y</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold small text-muted">Ay</label>
+                    <select name="ay" class="form-select">
+                        <option value="">Tüm Aylar</option>
+                        <option value="1">Ocak</option>
+                        <option value="2">Şubat</option>
+                        <option value="3">Mart</option>
+                        <option value="4">Nisan</option>
+                        <option value="5">Mayıs</option>
+                        <option value="6">Haziran</option>
+                        <option value="7">Temmuz</option>
+                        <option value="8">Ağustos</option>
+                        <option value="9">Eylül</option>
+                        <option value="10">Ekim</option>
+                        <option value="11">Kasım</option>
+                        <option value="12">Aralık</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-funnel me-1"></i>Filtrele
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Özet Finans Kartları -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm bg-white border-start border-primary border-4 rounded-3 p-3">
+                <span class="text-muted small fw-bold text-uppercase">Toplam Üretilen Ciro</span>
+                <h3 class="fw-bold text-primary mt-1 mb-0">@Model.ToplamCiro.ToString("C2")</h3>
+                <small class="text-muted">Seans Başına Ort.: @(Model.ToplamRandevuSayisi > 0 ? (Model.ToplamCiro / Model.ToplamRandevuSayisi).ToString("C2") : "₺0,00")</small>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm bg-white border-start border-success border-4 rounded-3 p-3">
+                <span class="text-muted small fw-bold text-uppercase">Tahsil Edilen (Nakit/Kart)</span>
+                <h3 class="fw-bold text-success mt-1 mb-0">@Model.TahsilEdilenUcret.ToString("C2")</h3>
+                <small class="text-success fw-semibold">Tahsilat Oranı: @(Model.ToplamCiro > 0 ? $"%{(Model.TahsilEdilenUcret / Model.ToplamCiro * 100):0.#}" : "%0")</small>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm bg-white border-start border-danger border-4 rounded-3 p-3">
+                <span class="text-muted small fw-bold text-uppercase">Bekleyen Tahsilat (Alacak)</span>
+                <h3 class="fw-bold text-danger mt-1 mb-0">@Model.BekleyenTahsilat.ToString("C2")</h3>
+                <small class="text-danger fw-semibold">Ödenmesi beklenen seanslar</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Psikolog Bazlı Hakediş Hesaplama Tablosu -->
+    <div class="card border-0 shadow-sm rounded-3 mb-4">
+        <div class="card-header bg-white border-bottom py-3">
+            <h5 class="fw-bold mb-0 text-dark">
+                <i class="bi bi-calculator text-primary me-2"></i>Psikolog Hakediş & Performans Tablosu
+            </h5>
+            <small class="text-muted">Klinik varsayılan hakediş oranı tahsil edilen seans ücreti üzerinden %50 olarak hesaplanmıştır.</small>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Psikolog</th>
+                            <th>Uzmanlık</th>
+                            <th class="text-center">Toplam Seans</th>
+                            <th class="text-end">Brüt Seans Cirosu</th>
+                            <th class="text-end">Tahsil Edilen</th>
+                            <th class="text-end">Bekleyen</th>
+                            <th class="text-end">Klinik Payı (%50)</th>
+                            <th class="text-end">Psikolog Hakediş (%50)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.PsikologOzetleri)
+                        {
+                            var klinikPayi = item.TahsilEdilen * 0.50m;
+                            <tr>
+                                <td class="fw-bold">@item.AdSoyad</td>
+                                <td>@item.UzmanlikAlani</td>
+                                <td class="text-center"><span class="badge bg-secondary">@item.ToplamSeans</span></td>
+                                <td class="text-end">@item.ToplamUretilenCiro.ToString("C2")</td>
+                                <td class="text-end text-success fw-bold">@item.TahsilEdilen.ToString("C2")</td>
+                                <td class="text-end text-danger">@item.Bekleyen.ToString("C2")</td>
+                                <td class="text-end text-muted">@klinikPayi.ToString("C2")</td>
+                                <td class="text-end"><span class="badge bg-success fs-6">@item.TahminiHakedis.ToString("C2")</span></td>
+                            </tr>
+                        }
+                        @if (!Model.PsikologOzetleri.Any())
+                        {
+                            <tr>
+                                <td colspan="8" class="text-center text-muted py-4">Kayıtlı psikolog verisi bulunmuyor.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+

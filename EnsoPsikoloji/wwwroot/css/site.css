@@ -1,0 +1,299 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --enso-primary: #2D5A43;        /* Adaçayı / Orman Yeşili */
+  --enso-primary-dark: #1E3D2D;   /* Koyu Zümrüt */
+  --enso-primary-light: #EBF3EE;  /* Çok açık adaçayı tonu */
+  --enso-accent: #D4A373;         /* Sıcak Toprak / Altın */
+  --enso-accent-hover: #BC8A5F;
+  --enso-bg: #FAF8F5;             /* Sıcak Bej / Krem */
+  --enso-card-bg: #FFFFFF;
+  --enso-text: #242E28;           /* Koyu Doğal Yeşil-Gri Metin */
+  --enso-muted: #64746A;          /* Doğal Gri */
+  --enso-border: #E8ECE9;
+  --enso-shadow: 0 10px 30px -10px rgba(45, 90, 67, 0.08);
+  --enso-shadow-hover: 0 20px 40px -10px rgba(45, 90, 67, 0.16);
+  --enso-radius: 16px;
+  --enso-radius-sm: 10px;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--enso-bg);
+  color: var(--enso-text);
+  line-height: 1.65;
+  margin-bottom: 0 !important;
+}
+
+/* Navigasyon Barı */
+.enso-navbar {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--enso-border);
+  transition: all 0.3s ease;
+}
+
+.enso-logo {
+  font-weight: 800;
+  font-size: 1.45rem;
+  letter-spacing: -0.5px;
+  color: var(--enso-primary) !important;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.enso-circle-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 3.5px solid var(--enso-primary);
+  border-right-color: transparent;
+  display: inline-block;
+  transform: rotate(-35deg);
+}
+
+.nav-link {
+  font-weight: 500;
+  color: var(--enso-text) !important;
+  padding: 0.5rem 1rem !important;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+  color: var(--enso-primary) !important;
+  background: var(--enso-primary-light);
+}
+
+/* Butonlar */
+.btn-enso-primary {
+  background-color: var(--enso-primary);
+  color: #FFFFFF !important;
+  border: 1px solid var(--enso-primary);
+  font-weight: 600;
+  padding: 0.65rem 1.4rem;
+  border-radius: 30px;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(45, 90, 67, 0.2);
+}
+
+.btn-enso-primary:hover {
+  background-color: var(--enso-primary-dark);
+  border-color: var(--enso-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(45, 90, 67, 0.3);
+}
+
+.btn-enso-accent {
+  background-color: var(--enso-accent);
+  color: #FFFFFF !important;
+  border: 1px solid var(--enso-accent);
+  font-weight: 600;
+  padding: 0.65rem 1.4rem;
+  border-radius: 30px;
+  transition: all 0.25s ease;
+}
+
+.btn-enso-accent:hover {
+  background-color: var(--enso-accent-hover);
+  border-color: var(--enso-accent-hover);
+  transform: translateY(-2px);
+}
+
+.btn-enso-outline {
+  border: 2px solid var(--enso-primary);
+  color: var(--enso-primary) !important;
+  background: transparent;
+  font-weight: 600;
+  padding: 0.6rem 1.3rem;
+  border-radius: 30px;
+  transition: all 0.25s ease;
+}
+
+.btn-enso-outline:hover {
+  background: var(--enso-primary);
+  color: #FFFFFF !important;
+}
+
+/* Hero Section */
+.hero-section {
+  background: linear-gradient(135deg, #F4F8F5 0%, #FAF8F5 50%, #F5F1EB 100%);
+  border-radius: 28px;
+  padding: 4rem 3rem;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(45, 90, 67, 0.08);
+}
+
+.hero-section::before {
+  content: "";
+  position: absolute;
+  top: -120px;
+  right: -120px;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(212, 163, 115, 0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.badge-enso {
+  background: var(--enso-primary-light);
+  color: var(--enso-primary);
+  font-weight: 600;
+  padding: 0.45rem 1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(45, 90, 67, 0.15);
+}
+
+/* Glassmorphism Talep Kartı */
+.glass-card {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: var(--enso-radius);
+  box-shadow: 0 15px 35px rgba(45, 90, 67, 0.08);
+  transition: transform 0.3s ease;
+}
+
+/* Özellik Kartları (Hizmetler) */
+.service-card {
+  background: var(--enso-card-bg);
+  border-radius: var(--enso-radius);
+  border: 1px solid var(--enso-border);
+  padding: 2rem 1.75rem;
+  transition: all 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.service-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--enso-shadow-hover);
+  border-color: var(--enso-primary);
+}
+
+.service-icon-box {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: var(--enso-primary-light);
+  color: var(--enso-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  margin-bottom: 1.25rem;
+  transition: all 0.3s ease;
+}
+
+.service-card:hover .service-icon-box {
+  background: var(--enso-primary);
+  color: #FFFFFF;
+}
+
+/* Doktor / Psikolog Kartları */
+.doctor-card {
+  background: var(--enso-card-bg);
+  border-radius: var(--enso-radius);
+  border: 1px solid var(--enso-border);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: var(--enso-shadow);
+}
+
+.doctor-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--enso-shadow-hover);
+}
+
+.doctor-avatar-circle {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--enso-primary-light), #DFECE4);
+  color: var(--enso-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  margin: 1.5rem auto 1rem auto;
+  border: 3px solid #FFFFFF;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+}
+
+/* Trust / Güven Rozetleri */
+.trust-badge-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 1.25rem;
+  background: #FFFFFF;
+  border-radius: var(--enso-radius-sm);
+  border: 1px solid var(--enso-border);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+}
+
+.trust-badge-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: var(--enso-primary-light);
+  color: var(--enso-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+/* Footer */
+.enso-footer {
+  background-color: #1A2820;
+  color: #CFDBD5;
+  padding: 4.5rem 0 2rem 0;
+  margin-top: 5rem;
+}
+
+.enso-footer h5, .enso-footer h4 {
+  color: #FFFFFF;
+  font-weight: 700;
+}
+
+.enso-footer a {
+  color: #A9B8B0;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.enso-footer a:hover {
+  color: var(--enso-accent);
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin-top: 3.5rem;
+  padding-top: 1.5rem;
+  font-size: 0.9rem;
+}
+
+/* Form kontrolleri */
+.form-control, .form-select {
+  border-radius: 10px;
+  border: 1.5px solid #E1E6E2;
+  padding: 0.65rem 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--enso-primary);
+  box-shadow: 0 0 0 3px rgba(45, 90, 67, 0.15);
+}
